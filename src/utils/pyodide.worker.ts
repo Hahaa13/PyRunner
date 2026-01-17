@@ -1,5 +1,5 @@
 import * as pyodide from "pyodide";
-import pyscript from "storage/jedi_script.py?raw";
+import pyscript from "../assets/jedi_script.py?raw";
 
 let pyodideInstance: pyodide.PyodideAPI | null = null;
 let state!: Int32Array;

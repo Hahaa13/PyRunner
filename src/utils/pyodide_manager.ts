@@ -1,6 +1,7 @@
+import PyWorker from "./pyodide.worker?worker";
 
-export function createPyodideClient(workerUrl: string) {
-    const worker = new Worker(workerUrl, {type: "module"});
+export function createPyodideClient() {
+    const worker = new PyWorker();
     let is_running = false;
     let is_killing = false;
     let seq = 0;

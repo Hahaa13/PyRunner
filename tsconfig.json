@@ -23,5 +23,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src", "public/pyodide.worker.ts"]
+  "include": ["src", "src/utils/pyodide.worker.ts"]
 }
