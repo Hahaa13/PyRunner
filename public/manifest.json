@@ -1,0 +1,15 @@
+{
+  "name": "PyRunner",
+  "short_name": "PyRunner",
+  "theme_color": "#1E1E1E",
+  "background_color": "#1E1E1E",
+  "display": "standalone",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "/python.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
