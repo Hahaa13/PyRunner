@@ -105,7 +105,7 @@ export class Editor extends LitElement {
     }
 
     async firstUpdated() {
-        this.pyodideClient = await createPyodideClient("/src/utils/pyodide.worker.js");
+        this.pyodideClient = await createPyodideClient("/pyodide.worker.js");
 
         this.editor = monaco.editor.create(document.getElementById("editor")!, {
             value: localStorage.getItem("editorvalue") || "print('Hello, world!')",
