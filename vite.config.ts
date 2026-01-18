@@ -36,6 +36,16 @@ export default defineConfig({
                 maximumFileSizeToCacheInBytes: 10 * 1024 * 1024, // 10 MB
                 runtimeCaching: [
                     {
+                        urlPattern: /\.(?:png|jpg|jpeg|gif|bmp|webp|svg)$/i, // pattern match images
+                        handler: 'CacheFirst',
+                        options: {
+                            cacheName: 'image-cache',
+                            expiration: {
+                                maxAgeSeconds: 60 * 60 * 24 * 30, // cache for 30 days
+                            },
+                        },
+                    },
+                    {
                         urlPattern: ({ url }) => /pyodide/.test(url.hostname),
                         handler: 'CacheFirst',
                         options: {
