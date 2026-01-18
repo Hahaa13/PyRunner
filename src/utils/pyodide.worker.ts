@@ -78,6 +78,7 @@ self.onmessage = async (event) => {
             console.debug("Running python script");
             pyodideInstance.runPythonAsync(`run_user_code(${JSON.stringify(payload.source)})`).then((res) => {
                 if (!res.ok) self.postMessage({ type: "stderr", result: res.error });
+                self.postMessage({ type: "stdout", result: "\n<Python exited with code " + res.exit_code + ">\n" });
             }).finally(() => {
                 self.postMessage({ id, type: "run_finished" })
             });
