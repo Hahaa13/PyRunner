@@ -19,7 +19,7 @@ export class Editor extends LitElement {
         return (...args: any) =>
             new Promise((resolve, reject) => {
             if (t) clearTimeout(t);
-            if (pendingReject) pendingReject();
+            if (pendingReject) pendingReject(new Error("Debounced"));
 
             pendingReject = reject;
 
@@ -120,7 +120,7 @@ export class Editor extends LitElement {
             return true;
         }, 500);
         this.editor.getModel()?.onDidChangeContent(() => {
-            try {debounceSave();} catch (e) {}
+            debounceSave().catch(() => { /* Ignore debounce rejections */ });
         })
 
         this.registerJediWebCompletions(this.pyodideClient);

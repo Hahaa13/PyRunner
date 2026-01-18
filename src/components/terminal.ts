@@ -44,21 +44,48 @@ export class TerminalElement extends LitElement {
 
     async get_input() {
         let datainput = "";
+        let cursorPos = 0;
         let done = false;
+
         const listen = this.terminal.onData(e => {
-            if (e === "\r") {
-                done = true;
-                listen.dispose();
-                return;
+            switch (e) {
+                case "\r": // Enter
+                    done = true;
+                    listen.dispose();
+                    return;
+
+                case "\u007F": // Backspace
+                    if (datainput.length > 0 && cursorPos > 0) {
+                        datainput = datainput.slice(0, cursorPos - 1) + datainput.slice(cursorPos);
+                        cursorPos--;
+                    }
+                    return;
+
+                case "\x1b[D": // Left arrow
+                    if (cursorPos > 0) {
+                        cursorPos--;
+                    }
+                    return;
+
+                case "\x1b[C": // Right arrow
+                    if (cursorPos < datainput.length) {
+                        cursorPos++;
+                    }
+                    return;
+
+                default:
+                    datainput = datainput.slice(0, cursorPos) + e + datainput.slice(cursorPos);
+                    cursorPos++;
             }
-            datainput += e
-        })
+        });
+
         while (!done) {
             await new Promise(resolve => setTimeout(resolve, 50));
         }
 
-        return datainput
+        return datainput;
     }
+
 
     protected firstUpdated(): void {
         window.terminal = this.terminal;
@@ -80,16 +107,48 @@ export class TerminalElement extends LitElement {
         
         this.terminal.writeln("Loading...")
         
+        let currentPos = 0;
+        let contentLength = 0;
         this.terminal.onKey(e => {
             switch (e.domEvent.code) {
                 case "Enter":
                     this.terminal.writeln("");
+                    currentPos = 0;
                     break;
+
+                case "ArrowLeft":
+                    if (currentPos > 0) {
+                        this.terminal.write("\x1b[D");
+                        currentPos--;
+                    }
+                    break;
+
+                case "ArrowRight":
+                    if (currentPos < contentLength) {
+                        this.terminal.write("\x1b[C");
+                        currentPos++;
+                    }
+                    break;
+
+                case "ArrowUp":
+                case "ArrowDown":
+                    break;
+
                 case "Backspace":
-                    this.terminal.write("\b \b");
+                    if (currentPos > 0) {
+                        this.terminal.write("\x1b[D\x1b[P");
+                        currentPos--;
+                        contentLength--;
+                    }
                     break;
+
                 default:
+                    if (currentPos < contentLength) {
+                        this.terminal.write("\x1b[@");
+                    }
                     this.terminal.write(e.key);
+                    currentPos += e.key.length;
+                    contentLength += e.key.length;
                     break;
             }
         });

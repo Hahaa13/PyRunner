@@ -25,43 +25,37 @@ export function createPyodideClient() {
 
   worker.onmessage = async (e) => {
     const { id, ok, type, result, error } = e.data;
+    const terminal = document.querySelector("element-terminal")!;
 
-    if (type === "stdout_loaded") {
-        const terminal = document.querySelector("element-terminal")?.terminal;
-        terminal?.clear();
-        terminal?.writeln(result);
-        return;
-    }
+    switch (type) {
+        case "stdout_loaded":
+            terminal.terminal.clear();
+            terminal.terminal.writeln(result);
+            return;
 
-    if (type === "stdout") {
-        const terminal = document.querySelector("element-terminal")?.terminal;
-        terminal?.write(result.replace(/\n/g, "\r\n"));
-        return;
-    }
+        case "stdout":
+            terminal.terminal.write(result.replace(/\n/g, "\r\n"));
+            return;
 
-    if (type === "stderr") {
-        const terminal = document.querySelector("element-terminal")?.terminal;
-        terminal?.write(`\x1b[31m${result.replace(/\n/g, "\r\n")}\x1b[0m`);
-        return;
-    }
+        case "stderr":
+            terminal.terminal?.write(`\x1b[31m${result.replace(/\n/g, "\r\n")}\x1b[0m`);
+            return;
 
-    if (type === "stdin") {
-        const terminal = document.querySelector("element-terminal");
-        terminal!.get_input().then(content => {
-            const bytes = new TextEncoder().encode(content);
-    
-            data.set(bytes.subarray(0, data.length));
-            Atomics.store(state, 1, bytes.length); // len
-            Atomics.store(state, 0, 1);            // flag=1 ready
-            Atomics.notify(state, 0, 1);
-        })
-        return;
-    }
+        case "stdin": 
+            terminal.get_input().then(content => {
+                const bytes = new TextEncoder().encode(content);
+        
+                data.set(bytes.subarray(0, data.length));
+                Atomics.store(state, 1, bytes.length); // len
+                Atomics.store(state, 0, 1);            // flag=1 ready
+                Atomics.notify(state, 0, 1);
+            })
+            return;
 
-    if (type === "run_finished") {
-        is_running = false;
-        window.dispatchEvent(new CustomEvent("pyodide-change", { detail: { is_running }}))
-        return;
+        case "run_finished":
+            is_running = false;
+            window.dispatchEvent(new CustomEvent("pyodide-change", { detail: { is_running }}))
+            return;
     }
 
     const p = pending.get(id);
