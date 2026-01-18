@@ -109,32 +109,32 @@ export class TerminalElement extends LitElement {
         
         let currentPos = 0;
         let contentLength = 0;
-        this.terminal.onKey(e => {
-            switch (e.domEvent.code) {
-                case "Enter":
+        this.terminal.onData(data => {
+            switch (data) {
+                case "\r": // Enter
                     this.terminal.writeln("");
                     currentPos = 0;
                     break;
 
-                case "ArrowLeft":
+                case "\x1b[D": // Left arrow
                     if (currentPos > 0) {
                         this.terminal.write("\x1b[D");
                         currentPos--;
                     }
                     break;
 
-                case "ArrowRight":
+                case "\x1b[C": // Right arrow
                     if (currentPos < contentLength) {
                         this.terminal.write("\x1b[C");
                         currentPos++;
                     }
                     break;
 
-                case "ArrowUp":
-                case "ArrowDown":
+                case "\x1b[A": // Up arrow
+                case "\x1b[B": // Down arrow
                     break;
 
-                case "Backspace":
+                case "\u007F": // Backspace
                     if (currentPos > 0) {
                         this.terminal.write("\x1b[D\x1b[P");
                         currentPos--;
@@ -146,9 +146,9 @@ export class TerminalElement extends LitElement {
                     if (currentPos < contentLength) {
                         this.terminal.write("\x1b[@");
                     }
-                    this.terminal.write(e.key);
-                    currentPos += e.key.length;
-                    contentLength += e.key.length;
+                    this.terminal.write(data);
+                    currentPos += data.length;
+                    contentLength += data.length;
                     break;
             }
         });
