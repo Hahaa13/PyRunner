@@ -17,7 +17,7 @@ def run_user_code(code: str, filename="main.py"):
     except SystemExit as e:
         return {"ok": True, "error": "", "exit_code": e.code}
     except Exception:
-        return {"ok": False, "error": traceback.format_exc(), "exit_code": -1}
+        return {"ok": False, "error": traceback.format_exc(), "exit_code": 1}
     
 def jedi_complete(source: str, line: int, column: int):
     try:

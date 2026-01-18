@@ -80,7 +80,7 @@ self.onmessage = async (event) => {
                 if (!res.ok) self.postMessage({ type: "stderr", result: res.error });
                 self.postMessage({ type: "stdout", result: "\n<Python exited with code " + res.exit_code + ">\n" });
             }).finally(() => {
-                self.postMessage({ id, type: "run_finished" })
+                self.postMessage({ id, type: "run_finished" });
             });
 
             return;
