@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
+    "assets": "npx pwa-assets-generator --preset minimal-2023 public/python.svg",
     "deploy": "npx wrangler pages deploy dist"
   },
   "dependencies": {
@@ -20,6 +21,7 @@
     "tailwindcss": "^4.1.18"
   },
   "devDependencies": {
+    "@vite-pwa/assets-generator": "^1.0.2",
     "typescript": "~5.9.3",
     "vite": "npm:rolldown-vite@7.2.5",
     "vite-plugin-pwa": "^1.2.0"

@@ -28,12 +28,33 @@ export default defineConfig({
                 "start_url": "/",
                 "icons": [
                     {
-                        "src": "/python.png",
+                        "src": "pwa-64x64.png",
+                        "sizes": "64x64",
+                        "type": "image/png"
+                    },
+                    {
+                        "src": "pwa-192x192.png",
+                        "sizes": "192x192",
+                        "type": "image/png"
+                    },
+                    {
+                        "src": "pwa-512x512.png",
                         "sizes": "512x512",
                         "type": "image/png"
+                    },
+                    {
+                        "src": "maskable-icon-512x512.png",
+                        "sizes": "512x512",
+                        "type": "image/png",
+                        "purpose": "maskable"   
                     }
                 ]
             },
+            includeAssets: [
+                'python.svg',
+                'favicon.ico',
+                'apple-touch-icon-180x180.png'
+            ],
             workbox: {
                 maximumFileSizeToCacheInBytes: 10 * 1024 * 1024, // 10 MB
                 runtimeCaching: [
